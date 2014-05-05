@@ -1,0 +1,7 @@
+########################################################
+#
+#
+#
+########################################################
+MapleWWWW:-Install("C:\\Users\\norb\\Libs\\test-store", "C:\\Users\\norb\\Tmp",
+"http://digi-area.com/light/MapleWWW/js/maple-www.js");

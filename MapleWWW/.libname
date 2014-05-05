@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<libname>
+  <libnameentry kind="SOURCE" path="modules"/>
+  <libnameentry kind="OUTPUT" path="binaries"/>
+  <libnameentry kind="ENVIRONMENT" path="Maple 17.02/17.02"/>
+</libname>

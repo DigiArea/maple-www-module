@@ -1,0 +1,79 @@
+MapleWWWW := module()
+	local separtor := "/", dirsep := "/", startup, isWindows := false, isFolder,
+	mkFolder, mkFile, toPath, isWorksheet, isMW, listDeep, fixContent;
+	export Install;
+	options load = startup, package,
+	`Copyright (c) 2014 by DigiArea, Inc. All rights reserved.`;
+	description
+	"Maple Module to prepare Maple Worksheets for Maple WWW technology through Maple";
+	startup := proc()
+		local platform := kernelopts('`platform`');
+		isWindows := evalb(platform = "windows" or platform = "dos");
+		dirsep := kernelopts('`dirsep`')
+	end proc;
+	isMW := proc(path::string)
+		evalb(length(path) > 3 and path[-3 .. -1] = ".mw")
+	end proc;
+	toPath := proc(path::string)
+		if isWindows then
+			StringTools:-SubstituteAll(path, separtor, dirsep)
+		else
+			path
+		end if
+	end proc;
+	isFolder := proc(path::string)
+		FileTools:-Exists(path) and FileTools:-IsDirectory(path)
+	end proc;
+	isWorksheet := proc(path::string)
+		isMW(path) and FileTools:-Exists(path) and not FileTools:-IsDirectory(path)
+	end proc;
+	mkFile := proc(folder::string, name::string)
+		fopen(cat(mkFolder(folder), dirsep, name),'WRITE');
+	end proc;
+	mkFolder := proc(path::string)
+		local folder;
+		folder := toPath(path);
+		if not FileTools:-Exists(folder) then
+			FileTools:-MakeDirectory(folder,'recurse'= true)
+		end if;
+		return folder
+	end proc;
+	listDeep := proc(dir::string)
+		local list::list(string), item::string, file::string, result := NULL;
+		list := FileTools:-ListDirectory(dir);
+		for item in list do
+			file := toPath(cat(dir, separtor, item));
+			if isFolder(file) then
+				result := result, MapleWWWW:-listDeep(file)
+			elif isWorksheet(file) then
+				result := result, [file, item]
+			end if;
+		end do;
+		return result
+	end proc;
+	fixContent := proc(content::string, xhtml::string)::string;
+		return StringTools:-Substitute(content, "<Worksheet>", xhtml);
+	end proc;
+	Install := proc(src::string, dst::string, url::string, pfx::string = "")
+		description "This procedure";
+		local list::list, item::string, file::string, l := length(src) + 1,
+		fileContent::string, worksheet::string := "<Worksheet>", xhtml;
+		xhtml := cat(worksheet,
+		"<xhtml:script xmlns:xhtml=\"http://www.w3.org/1999/xhtml\" src=\"", url,
+		"\" type=\"application/javascript\"/>");
+		list := MapleWWWW:-listDeep(src);
+		for item in list do
+			try
+				fileContent := FileTools:-Text:-ReadFile(item[1]);
+				fileContent := StringTools:-Substitute(fileContent, worksheet, xhtml);
+				file := mkFile(cat(dst, StringTools:-SubString(item[1], l ..
+				length(item[1]) - length(item[2]))), item[2]);
+				fprintf(file, "%s", fileContent);
+			catch :
+				printf("Error: %a(%a)\n", lastexception, [args])
+			finally
+				fclose(file)
+			end try
+		end do;
+	end proc;
+end module;
