@@ -10,7 +10,7 @@ Go to the [Releases page](https://github.com/DigiArea/maple-www-module/releases)
 
 #### Use
 
-Use GettingStarted.mw to use the package.
+Use **GettingStarted.mw** inside the downloaded archive to use the package.
 
 ### Links
  
