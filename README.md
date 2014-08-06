@@ -15,7 +15,6 @@ Use **GettingStarted.mw** inside the downloaded archive to use the package.
 ### Links
  
  - [Maple WWW Project](http://digi-area.com/light/MapleWWW/)
- - [Closure IDE - JavaScript IDE powered by Google Closure Tools](http://digi-area.com/ClosureIDE/)
  - [Maple IDE - development environment for the Maple programming language](http://digi-area.com/CasStudio/Maple/)
 
 ###License
